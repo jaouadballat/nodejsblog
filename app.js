@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
 const mongoose = require('mongoose');
 const session = require('express-session');
+const passport = require('passport');
+const auth = require('./config/auth');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -39,6 +41,11 @@ app.use(function (req, res, next) {
   res.locals.messages = require('express-messages')(req, res);
   next();
 });
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+require('./config/passport')(passport);
 
 
 

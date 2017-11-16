@@ -61,6 +61,12 @@ router.get('/auth/facebook/callback',
   passport.authenticate('facebook', { successRedirect: '/',
                                       failureRedirect: '/users/login' }));
 
+router.get('/auth/twitter', passport.authenticate('twitter'));
+
+router.get('/auth/twitter/callback',
+  passport.authenticate('twitter', { successRedirect: '/',
+                                     failureRedirect: '/users/login' }));
+
 router.get('/logout', function(req, res){
   req.logout();
   res.redirect('/users/login');

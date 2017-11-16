@@ -12,6 +12,9 @@ var userSchema = new Schema({
 	googleid: {
 		type: String
 	},
+	twitterid: {
+		type: String
+	},
 	email: {
 		type: String,
 		require: true

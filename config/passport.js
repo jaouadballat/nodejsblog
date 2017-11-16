@@ -1,6 +1,7 @@
 var LocalStrategy = require('passport-local').Strategy;
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;
+var TwitterStrategy = require('passport-twitter').Strategy;
 var User = require('../models/user');
 var bcrypt = require('bcryptjs');
 var passport = require('passport');
@@ -88,6 +89,33 @@ var keys = require('./key');
 	));
 
 	//end
+	 // twitter login
+	 	passport.use(new TwitterStrategy({
+	    consumerKey: keys.twitter.clientId,
+	    consumerSecret: keys.twitter.clientSecret,
+	    callbackURL: "http://localhost:3000/users/auth/twitter/callback"
+	  },
+	  function(accessToken, refreshToken, profile, done) {
+	      User.findOne({twitterid: profile.id}, function(err, user){
+	      console.log(profile)
+	      	if(user) {
+	      		return done(null, user);
+	      	}else{
+	      		new User({
+	      			twitterid: profile.id,
+	      			username: profile.displayName
+	      		}).save(function(err, user){
+	      			if(err){
+	      				console.log(err)
+	      			}else{
+	      				return done(null, user);
+	      			}
+	      		})
+	      	}
+	      })
+	  }
+	));
+	 // end
 
 
 	passport.serializeUser(function(user, done) {

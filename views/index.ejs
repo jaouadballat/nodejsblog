@@ -8,12 +8,14 @@
 		  <div class="card-body">
 		    <h4 class="card-title"><%= article.title %></h4>
 		    <p class="card-text"><%= article.content %></p>
-		    <% if(article.author === user.username){ %>
-		    <a href="/article/edit/<%= article._id%>" class="btn btn-xs btn-primary float-left mr-1">Edit</a>
-		    <form action="/article/delete/<%=article._id%>" method="post">
-		    	<input type="submit" class="btn btn-xs btn-danger " value="Delete">
-		    </form>
-		    <% } %>
+		   <% if(user) { %>
+			 <% if(article.author === user.username){ %>
+			    <a href="/article/edit/<%= article._id%>" class="btn btn-xs btn-primary float-left mr-1">Edit</a>
+			    <form action="/article/delete/<%=article._id%>" method="post">
+			    	<input type="submit" class="btn btn-xs btn-danger " value="Delete">
+			    </form>
+			 <% } %>
+		   <% } %>
 		  </div>
 		</div>
     <% }) %>

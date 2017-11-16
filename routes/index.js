@@ -3,7 +3,7 @@ var router = express.Router();
 var Article = require('../models/article');
 var auth  = require('../config/auth');
 /* GET home page. */
-router.get('/',auth, function(req, res, next) {
+router.get('/', function(req, res, next) {
   Article.find({}, function(err, articles){
   	if(err){
   		console.log(err)

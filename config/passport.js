@@ -1,7 +1,9 @@
 var LocalStrategy = require('passport-local').Strategy;
+var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var User = require('../models/user');
 var bcrypt = require('bcryptjs');
 var passport = require('passport');
+var keys = require('./key');
 
 	passport.use(new LocalStrategy({
 		usernameField: 'email',
@@ -30,6 +32,33 @@ var passport = require('passport');
 	    });
 	  }
 	));
+
+	// google auth
+		passport.use(new GoogleStrategy({
+	    clientID: keys.clientId,
+	    clientSecret: keys.clientSecret,
+	    callbackURL: "http://localhost:3000/users/auth/google/callback"
+	  },
+	  function(accessToken, refreshToken, profile, done) {
+	      User.findOne({googleid: profile.id}, function(err, user){
+	      	if(user) {
+	      		return done(null, user);
+	      	}else{
+	      		new User({
+	      			googleid: profile.id,
+	      			username: profile.displayName
+	      		}).save(function(err, user){
+	      			if(err){
+	      				console.log(err)
+	      			}else{
+	      				return done(null, user);
+	      			}
+	      		})
+	      	}
+	      })
+	  }
+	));
+	// end
 	passport.serializeUser(function(user, done) {
 	  done(null, user.id);
 	});

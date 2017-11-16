@@ -45,6 +45,18 @@ router.post('/login',
                                    failureFlash: true })
 );
 
+router.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile'] })
+);
+
+router.get('/auth/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/users/login' }),
+  function(req, res) {
+    res.redirect('/');
+  });
+
+
+
 router.get('/logout', function(req, res){
   req.logout();
   res.redirect('/users/login');

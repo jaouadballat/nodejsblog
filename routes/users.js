@@ -55,7 +55,11 @@ router.get('/auth/google/callback',
     res.redirect('/');
   });
 
+router.get('/auth/facebook', passport.authenticate('facebook'));
 
+router.get('/auth/facebook/callback',
+  passport.authenticate('facebook', { successRedirect: '/',
+                                      failureRedirect: '/users/login' }));
 
 router.get('/logout', function(req, res){
   req.logout();

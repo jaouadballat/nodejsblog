@@ -1,5 +1,6 @@
 var LocalStrategy = require('passport-local').Strategy;
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+var FacebookStrategy = require('passport-facebook').Strategy;
 var User = require('../models/user');
 var bcrypt = require('bcryptjs');
 var passport = require('passport');
@@ -35,8 +36,8 @@ var keys = require('./key');
 
 	// google auth
 		passport.use(new GoogleStrategy({
-	    clientID: keys.clientId,
-	    clientSecret: keys.clientSecret,
+	    clientID: keys.google.clientId,
+	    clientSecret: keys.google.clientSecret,
 	    callbackURL: "http://localhost:3000/users/auth/google/callback"
 	  },
 	  function(accessToken, refreshToken, profile, done) {
@@ -59,6 +60,36 @@ var keys = require('./key');
 	  }
 	));
 	// end
+
+	// facebook login
+		passport.use(new FacebookStrategy({
+	    clientID: keys.facebook.clientId,
+	    clientSecret: keys.facebook.clientSecret,
+	    callbackURL: "http://localhost:3000/users/auth/facebook/callback"
+	  },
+	  function(accessToken, refreshToken, profile, done) {
+	      User.findOne({facebookid: profile.id}, function(err, user){
+	      	if(user) {
+	      		return done(null, user);
+	      	}else{
+	      		new User({
+	      			facebookid: profile.id,
+	      			username: profile.displayName
+	      		}).save(function(err, user){
+	      			if(err){
+	      				console.log(err)
+	      			}else{
+	      				return done(null, user);
+	      			}
+	      		})
+	      	}
+	      })
+	  }
+	));
+
+	//end
+
+
 	passport.serializeUser(function(user, done) {
 	  done(null, user.id);
 	});

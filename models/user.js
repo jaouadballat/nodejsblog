@@ -6,6 +6,9 @@ var userSchema = new Schema({
 		type: String,
 		require: true
 	},
+	facebookid:{
+		type:String
+	},
 	googleid: {
 		type: String
 	},

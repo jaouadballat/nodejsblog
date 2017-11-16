@@ -1,14 +1,15 @@
 var express = require('express');
 var router = express.Router();
 var Article = require('../models/article');
+var auth  = require('../config/auth');
 
 /* GET home page. */
-router.get('/add', function(req, res, next) {
+router.get('/add',auth, function(req, res, next) {
 
   res.render('add_article');
 });
 
-router.post('/add', function(req, res, next) {
+router.post('/add',auth, function(req, res, next) {
   req.checkBody('title', 'Title is require').notEmpty();
   req.checkBody('content', 'Content is require').notEmpty();
   var errors = req.validationErrors();
@@ -19,7 +20,8 @@ router.post('/add', function(req, res, next) {
   }else{
   	var article = new Article();
   	article.title = req.body.title;
-  	article.content = req.body.content;
+    article.content = req.body.content;
+  	article.author = req.user.username;
   	article.save(function(err, article){
   		if(err){
   			console.log(err)
@@ -31,7 +33,7 @@ router.post('/add', function(req, res, next) {
   }
 });
 
-router.get('/edit/:id', function(req, res, next){
+router.get('/edit/:id',auth, function(req, res, next){
 	Article.findById(req.params.id, function(err, article){
 		res.render("edit", {
 			article: article
@@ -39,7 +41,7 @@ router.get('/edit/:id', function(req, res, next){
 	});
 });
 
-router.post('/update/:id', function(req, res, next){
+router.post('/update/:id',auth, function(req, res, next){
 		Article.findByIdAndUpdate(req.params.id,
 		{$set: {title: req.body.title, content: req.body.content}},
 		 function(err, article){
@@ -51,7 +53,7 @@ router.post('/update/:id', function(req, res, next){
 	});
 });
 
-router.post('/delete/:id', function(req, res){
+router.post('/delete/:id',auth, function(req, res){
 	Article.findByIdAndRemove(req.params.id, function(err, article){
 		res.redirect('/');
 	})

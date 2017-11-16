@@ -1,10 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var Article = require('../models/article');
-
-
+var auth  = require('../config/auth');
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/',auth, function(req, res, next) {
   Article.find({}, function(err, articles){
   	if(err){
   		console.log(err)
@@ -16,7 +15,9 @@ router.get('/', function(req, res, next) {
   })
 });
 
-router.get('/about', function(req, res, next) {
+
+
+router.get('/about',auth, function(req, res, next) {
   res.render('about');
 });
 

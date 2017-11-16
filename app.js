@@ -8,7 +8,6 @@ const expressValidator = require('express-validator');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('passport');
-const auth = require('./config/auth');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -33,8 +32,7 @@ app.set('trust proxy', 1) // trust first proxy
 app.use(session({
   secret: 'keyboard cat',
   resave: true,
-  saveUninitialized: true,
-  cookie: { secure: true }
+  saveUninitialized: true
 }));
 app.use(require('connect-flash')());
 app.use(function (req, res, next) {
@@ -44,9 +42,12 @@ app.use(function (req, res, next) {
 app.use(passport.initialize());
 app.use(passport.session());
 
+require('./config/passport');
 
-require('./config/passport')(passport);
-
+app.use(function(req, res, next){
+  res.locals.user = req.user;
+  next()
+});
 
 
 //Set up default mongoose connection
@@ -60,11 +61,9 @@ var db = mongoose.connection;
 
 //Bind connection to error event (to get notification of connection errors)
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
 app.use('/', index);
 app.use('/users', users);
 app.use('/article', articles);
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

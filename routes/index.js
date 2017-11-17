@@ -4,7 +4,7 @@ var Article = require('../models/article');
 var auth  = require('../config/auth');
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  Article.find({}, function(err, articles){
+  Article.find({}).populate("author").exec(function(err, articles){
   	if(err){
   		console.log(err)
   	}else{

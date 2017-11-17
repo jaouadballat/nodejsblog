@@ -19,7 +19,7 @@ var articleSchema = new Schema({
 		default: Date.now
 	}, 
 	author: {
-		type: String
+		type:  Schema.Types.ObjectId, ref: 'User'
 	}
 });
 

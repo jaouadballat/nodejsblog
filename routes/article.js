@@ -21,12 +21,11 @@ router.post('/add',auth, function(req, res, next) {
   	var article = new Article();
   	article.title = req.body.title;
     article.content = req.body.content;
-  	article.author = req.user.username;
+  	article.author = req.user._id;
   	article.save(function(err, article){
   		if(err){
   			console.log(err)
   		}else{
-  			req.flash('alert alert-success list-unstyled', 'new article has been added !');
   			res.render('add_article');
   		}
   	})

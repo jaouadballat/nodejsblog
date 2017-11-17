@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var Article = require('../models/article');
+var User = require('../models/user');
 var auth  = require('../config/auth');
 
 /* GET home page. */
@@ -26,6 +27,7 @@ router.post('/add',auth, function(req, res, next) {
   		if(err){
   			console.log(err)
   		}else{
+  			
   			res.render('add_article');
   		}
   	})
